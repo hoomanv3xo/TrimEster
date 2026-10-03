@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>trimESTER – Progress</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="5541.css">
+</head>
+<body>
+
+<div id="leftcolumn">
+  <div class="brand"><span>trim</span>ESTER</div>
+  <nav>
+    <a href="home.html">⌂ Home</a>
+    <a href="inbox.html">✉ Inbox</a>
+    <a href="logs.html">☰ Logs</a>
+    <a href="progress.html" class="active">◈ Progress</a>
+    <a href="community.html">♺ Community</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html" class="logout">⏻ Logout</a>
+  </nav>
+</div>
+
+<div id="content">
+  <div class="page-title">
+    <h2>Progress</h2>
+    <h4>Your weight journey at a glance</h4>
+  </div>
+
+  <!-- Summary stats -->
+  <div class="stats-row" id="summaryRow" style="display:none;">
+    <div class="stat-box">
+      <div class="label">Entries</div>
+      <div class="value" id="entryCount">0</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Best (lowest)</div>
+      <div class="value" id="bestW">--</div>
+      <div class="label">lb</div>
+    </div>
+    <div class="stat-box highlight">
+      <div class="label">Total change</div>
+      <div class="value" id="totalChange">--</div>
+      <div class="label">lb</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Weight Over Time</h3>
+    <canvas id="chart" height="220"></canvas>
+    <p id="empty" style="color:var(--muted);font-size:13px;margin-top:12px;display:none;">No data yet — log weights on the Home page to see your chart.</p>
+  </div>
+</div>
+
+<script>
+const entries = (JSON.parse(localStorage.getItem('entries')) || [])
+  .sort((a, b) => (a.rawDate || '').localeCompare(b.rawDate || ''));
+
+if (entries.length) {
+  const labels = entries.map(e => e.date);
+  const data   = entries.map(e => Number(e.weight));
+  const first  = data[0], last = data[data.length - 1];
+  const diff   = (last - first).toFixed(1);
+
+  document.getElementById('summaryRow').style.display = 'flex';
+  document.getElementById('entryCount').innerText = entries.length;
+  document.getElementById('bestW').innerText      = Math.min(...data);
+  document.getElementById('totalChange').innerText = (diff > 0 ? '+' : '') + diff;
+
+  new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Weight (lb)',
+        data,
+        borderColor: '#2A573B',
+        backgroundColor: 'rgba(42,87,59,.08)',
+        fill: true,
+        tension: 0.35,
+        pointRadius: 5,
+        pointBackgroundColor: '#2A573B',
+        pointHoverRadius: 7
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: '#E2E8E4' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+} else {
+  document.getElementById('empty').style.display = 'block';
+}
+</script>
+</body>
+</html>

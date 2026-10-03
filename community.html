@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>trimESTER – Community</title>
+  <link rel="stylesheet" href="5541.css">
+</head>
+<body>
+
+<div id="leftcolumn">
+  <div class="brand"><span>trim</span>ESTER</div>
+  <nav>
+    <a href="home.html">⌂ Home</a>
+    <a href="inbox.html">✉ Inbox</a>
+    <a href="logs.html">☰ Logs</a>
+    <a href="progress.html">◈ Progress</a>
+    <a href="community.html" class="active">♺ Community</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html" class="logout">⏻ Logout</a>
+  </nav>
+</div>
+
+<div id="content">
+  <div class="page-title">
+    <h2>Community</h2>
+    <h4>Cheer on your friends</h4>
+  </div>
+
+  <div class="card section">
+    <h3>Add a Friend</h3>
+    <div class="inline-form">
+      <input type="text" id="friend" placeholder="Friend's name…" style="width:220px;">
+      <button class="btn btn-primary" onclick="add()">Add Friend</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Your Friends</h3>
+    <div id="friends"></div>
+    <p id="empty" style="color:var(--muted);font-size:13px;display:none;">No friends added yet. Invite someone to start!</p>
+  </div>
+</div>
+
+<script>
+let friends = JSON.parse(localStorage.getItem('friends')) || [];
+
+function add() {
+  const v = document.getElementById('friend').value.trim();
+  if (!v) return;
+  friends.push(v);
+  localStorage.setItem('friends', JSON.stringify(friends));
+  document.getElementById('friend').value = '';
+  render();
+}
+
+function remove(i) {
+  friends.splice(i, 1);
+  localStorage.setItem('friends', JSON.stringify(friends));
+  render();
+}
+
+function encourage(name) {
+  alert('🎉 You encouraged ' + name + '! Keep it up!');
+}
+
+function render() {
+  const c = document.getElementById('friends');
+  const e = document.getElementById('empty');
+  if (!friends.length) { c.innerHTML = ''; e.style.display = 'block'; return; }
+  e.style.display = 'none';
+  c.innerHTML = friends.map((f, i) => `
+    <div class="friend-item">
+      <span class="friend-name">${f}</span>
+      <div class="log-actions">
+        <button class="btn btn-secondary btn-sm" onclick="encourage('${f}')">Encourage 🎉</button>
+        <button class="btn btn-danger btn-sm" onclick="remove(${i})">Remove</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.getElementById('friend').addEventListener('keydown', e => { if (e.key === 'Enter') add(); });
+render();
+</script>
+</body>
+</html>

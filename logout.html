@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>trimESTER – Logout</title>
+  <link rel="stylesheet" href="5541.css">
+</head>
+<body>
+
+<div id="leftcolumn">
+  <div class="brand"><span>trim</span>ESTER</div>
+  <nav>
+    <a href="home.html">⌂ Home</a>
+    <a href="inbox.html">✉ Inbox</a>
+    <a href="logs.html">☰ Logs</a>
+    <a href="progress.html">◈ Progress</a>
+    <a href="community.html">♺ Community</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html" class="active logout">⏻ Logout</a>
+  </nav>
+</div>
+
+<div id="content" style="display:flex;align-items:center;justify-content:center;min-height:100vh;">
+  <div class="card" style="max-width:400px;width:100%;text-align:center;padding:40px;">
+    <div style="font-size:48px;margin-bottom:16px;">⏻</div>
+    <h2 style="margin-bottom:8px;">See you soon</h2>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;">You're about to be logged out, <strong id="logoutName">there</strong>.</p>
+    <div style="display:flex;gap:12px;justify-content:center;">
+      <a href="home.html" class="btn btn-secondary" style="text-decoration:none;color:var(--green-mid);">Cancel</a>
+      <button class="btn btn-danger" onclick="logout()">Confirm Logout</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const n = localStorage.getItem('userName');
+if (n) document.getElementById('logoutName').innerText = n;
+
+function logout() {
+  window.location.replace('home.html');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green-dark:  #1E3D2B;
+  --green-mid:   #2A573B;
+  --green-light: #3A7A52;
+  --accent:      #A8D5B5;
+  --bg:          #F7F8F6;
+  --surface:     #FFFFFF;
+  --border:      #E2E8E4;
+  --text:        #1A2B20;
+  --muted:       #6B8070;
+  --danger:      #C0392B;
+  --sidebar-w:   220px;
+  --radius:      10px;
+  --shadow:      0 2px 12px rgba(30,61,43,.08);
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+#leftcolumn {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--green-dark);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 0 24px;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
+
+.brand {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: .5px;
+  padding: 0 24px 32px;
+  border-bottom: 1px solid rgba(168,213,181,.15);
+}
+
+.brand span { color: #fff; }
+
+nav {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  gap: 2px;
+  flex: 1;
+}
+
+nav a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255,255,255,.65);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  padding: 10px 24px;
+  border-left: 3px solid transparent;
+  transition: all .18s ease;
+}
+
+nav a:hover,
+nav a.active {
+  color: #fff;
+  background: rgba(168,213,181,.12);
+  border-left-color: var(--accent);
+}
+
+nav a.logout {
+  margin-top: auto;
+  color: rgba(255,100,80,.7);
+}
+
+nav a.logout:hover { color: #ff6450; background: rgba(255,100,80,.1); border-left-color: #ff6450; }
+
+/* ── MAIN CONTENT ────────────────────────────────── */
+#content {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 40px 44px;
+  max-width: 900px;
+}
+
+/* ── TYPOGRAPHY ──────────────────────────────────── */
+h1, h2 {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+}
+
+h2 { font-size: 30px; color: var(--text); margin-bottom: 28px; }
+h3 { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+h4 { font-size: 14px; font-weight: 500; color: var(--muted); }
+
+/* ── CARDS ───────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+
+/* ── STATS ROW ───────────────────────────────────── */
+.stats-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-box {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-box .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .8px; color: var(--muted); margin-bottom: 8px; }
+.stat-box .value { font-family: 'DM Serif Display', serif; font-size: 34px; color: var(--green-mid); }
+.stat-box.highlight { background: var(--green-dark); border-color: var(--green-dark); }
+.stat-box.highlight .label { color: var(--accent); }
+.stat-box.highlight .value { color: #fff; }
+
+/* ── FORM ELEMENTS ───────────────────────────────── */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 13px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+  transition: border-color .15s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+textarea:focus {
+  border-color: var(--green-light);
+  box-shadow: 0 0 0 3px rgba(58,122,82,.12);
+}
+
+textarea { resize: vertical; width: 100%; }
+
+/* ── BUTTONS ─────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all .15s ease;
+  letter-spacing: .2px;
+}
+
+.btn-primary { background: var(--green-mid); color: #fff; }
+.btn-primary:hover { background: var(--green-dark); }
+.btn-secondary { background: transparent; color: var(--green-mid); border: 1px solid var(--green-mid); }
+.btn-secondary:hover { background: var(--green-mid); color: #fff; }
+.btn-danger { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+.btn-danger:hover { background: var(--danger); color: #fff; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+
+/* ── LOG LIST ────────────────────────────────────── */
+.log-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.log-item:last-child { border-bottom: none; }
+.log-date { font-size: 12px; color: var(--muted); }
+.log-weight { font-weight: 600; font-size: 15px; }
+.log-actions { display: flex; gap: 8px; }
+
+/* ── MESSAGE ITEMS ───────────────────────────────── */
+.msg-item {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  border-left: 3px solid var(--accent);
+}
+
+/* ── FRIEND ITEMS ────────────────────────────────── */
+.friend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.friend-name { font-weight: 500; }
+
+/* ── FEED ────────────────────────────────────────── */
+.feed-item {
+  font-size: 12px;
+  color: var(--muted);
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── SECTION SPACING ─────────────────────────────── */
+.section { margin-bottom: 32px; }
+.inline-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.page-title { border-bottom: 2px solid var(--border); padding-bottom: 16px; margin-bottom: 32px; }

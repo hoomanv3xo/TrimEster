@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>trimESTER – Home</title>
+  <link rel="stylesheet" href="5541.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div id="leftcolumn">
+  <div class="brand"><span>trim</span>ESTER</div>
+  <nav>
+    <a href="home.html" class="active">⌂ Home</a>
+    <a href="inbox.html">✉ Inbox</a>
+    <a href="logs.html">☰ Logs</a>
+    <a href="progress.html">◈ Progress</a>
+    <a href="community.html">♺ Community</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html" class="logout">⏻ Logout</a>
+  </nav>
+</div>
+
+<div id="content">
+  <div class="page-title">
+    <h2>Good day, <span id="displayName">there</span> 👋</h2>
+    <h4>Track your weight journey</h4>
+  </div>
+
+  <!-- Stats Row -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="label">Starting</div>
+      <div class="value" id="startW">--</div>
+      <div class="label">lb</div>
+    </div>
+    <div class="stat-box highlight">
+      <div class="label">Current</div>
+      <div class="value" id="currentW">--</div>
+      <div class="label">lb</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Goal</div>
+      <div class="value" id="goalW">--</div>
+      <div class="label">lb</div>
+    </div>
+    <div class="stat-box">
+      <div class="label">Change</div>
+      <div class="value" id="weeklyChange" style="font-size:24px;">--</div>
+      <div class="label" id="lastCheck">Last check-in: --</div>
+    </div>
+  </div>
+
+  <!-- Set Goals -->
+  <div class="card section">
+    <h3>Set Goals</h3>
+    <div class="inline-form">
+      <input type="number" id="startInput" placeholder="Starting weight (lb)" style="width:170px">
+      <input type="number" id="goalInput"  placeholder="Goal weight (lb)"    style="width:170px">
+      <button class="btn btn-primary" onclick="saveGoals()">Save Goals</button>
+    </div>
+  </div>
+
+  <!-- Log Weight -->
+  <div class="card section">
+    <h3>Log Weight</h3>
+    <div class="inline-form">
+      <input type="date" id="entryDate">
+      <input type="number" id="weightInput" placeholder="Weight (lb)" style="width:140px">
+      <button class="btn btn-primary" onclick="addEntry()">Update</button>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div class="card section">
+    <h3>Weight Over Time</h3>
+    <canvas id="chart" height="180"></canvas>
+  </div>
+
+  <!-- Status / Feed -->
+  <div class="card section">
+    <h3>Post a Status</h3>
+    <textarea id="status" rows="3" placeholder="Share a comment or update…"></textarea>
+    <br><br>
+    <button class="btn btn-secondary" onclick="postStatus()">Post</button>
+    <div id="feed" style="margin-top:16px;"></div>
+  </div>
+</div>
+
+<script>
+let entries = JSON.parse(localStorage.getItem('entries')) || [];
+let feed    = JSON.parse(localStorage.getItem('feed'))    || [];
+let chart;
+
+if (!localStorage.getItem('startW')) localStorage.setItem('startW', 180);
+if (!localStorage.getItem('goalW'))  localStorage.setItem('goalW',  150);
+
+// Prompt for name on first visit
+if (!localStorage.getItem('userName')) {
+  const name = prompt("Welcome to trimESTER! What's your name?");
+  if (name && name.trim()) localStorage.setItem('userName', name.trim());
+}
+
+function loadName() {
+  const n = localStorage.getItem('userName');
+  if (n) document.getElementById('displayName').innerText = n;
+}
+
+function loadGoals() {
+  document.getElementById('startW').innerText = localStorage.getItem('startW') || '--';
+  document.getElementById('goalW').innerText  = localStorage.getItem('goalW')  || '--';
+}
+
+function saveGoals() {
+  const s = document.getElementById('startInput').value;
+  const g = document.getElementById('goalInput').value;
+  if (s) localStorage.setItem('startW', s);
+  if (g) localStorage.setItem('goalW',  g);
+  loadGoals();
+  document.getElementById('startInput').value = '';
+  document.getElementById('goalInput').value  = '';
+}
+
+function addEntry() {
+  const w = document.getElementById('weightInput').value;
+  if (!w) return;
+  const chosen = document.getElementById('entryDate').value;
+  const date   = chosen
+    ? new Date(chosen + 'T00:00:00').toLocaleDateString()
+    : new Date().toLocaleDateString();
+  entries.push({ weight: Number(w), date, rawDate: chosen || new Date().toISOString().split('T')[0] });
+  localStorage.setItem('entries', JSON.stringify(entries));
+  feed.unshift(date + ' — Weight updated: ' + w + ' lb');
+  localStorage.setItem('feed', JSON.stringify(feed));
+  document.getElementById('weightInput').value = '';
+  render();
+}
+
+function postStatus() {
+  const s = document.getElementById('status').value.trim();
+  if (!s) return;
+  feed.unshift('You: ' + s);
+  localStorage.setItem('feed', JSON.stringify(feed));
+  document.getElementById('status').value = '';
+  renderFeed();
+}
+
+function render() {
+  if (entries.length) {
+    entries.sort((a, b) => (a.rawDate || '').localeCompare(b.rawDate || ''));
+    const last  = entries[entries.length - 1];
+    const first = entries[0];
+    document.getElementById('currentW').innerText    = last.weight;
+    document.getElementById('lastCheck').innerText   = 'Last: ' + last.date;
+    const diff = (last.weight - first.weight).toFixed(1);
+    const sign = diff > 0 ? '+' : '';
+    document.getElementById('weeklyChange').innerText = sign + diff + ' lb';
+  }
+  renderFeed();
+  updateChart();
+}
+
+function renderFeed() {
+  const c = document.getElementById('feed');
+  c.innerHTML = feed.slice(0, 10).map(i => `<div class="feed-item">${i}</div>`).join('');
+}
+
+function updateChart() {
+  const labels = entries.map(e => e.date);
+  const data   = entries.map(e => e.weight);
+  if (chart) chart.destroy();
+  chart = new Chart(document.getElementById('chart'), {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{ label: 'Weight (lb)', data, borderColor: '#2A573B', backgroundColor: 'rgba(42,87,59,.08)', fill: true, tension: 0.35, pointRadius: 4, pointBackgroundColor: '#2A573B' }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { grid: { color: '#E2E8E4' } }, x: { grid: { display: false } } } }
+  });
+}
+
+loadName();
+loadGoals();
+render();
+</script>
+</body>
+</html>

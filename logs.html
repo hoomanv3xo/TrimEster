@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>trimESTER – Logs</title>
+  <link rel="stylesheet" href="5541.css">
+</head>
+<body>
+
+<div id="leftcolumn">
+  <div class="brand"><span>trim</span>ESTER</div>
+  <nav>
+    <a href="home.html">⌂ Home</a>
+    <a href="inbox.html">✉ Inbox</a>
+    <a href="logs.html" class="active">☰ Logs</a>
+    <a href="progress.html">◈ Progress</a>
+    <a href="community.html">♺ Community</a>
+    <a href="settings.html">⚙ Settings</a>
+    <a href="logout.html" class="logout">⏻ Logout</a>
+  </nav>
+</div>
+
+<div id="content">
+  <div class="page-title">
+    <h2>Weight Logs</h2>
+    <h4>All your recorded entries</h4>
+  </div>
+
+  <div class="card">
+    <div id="list"></div>
+    <p id="empty" style="color:var(--muted);font-size:13px;display:none;">No entries yet. Log your first weight on the Home page.</p>
+  </div>
+</div>
+
+<script>
+let entries = JSON.parse(localStorage.getItem('entries')) || [];
+
+function render() {
+  const list  = document.getElementById('list');
+  const empty = document.getElementById('empty');
+  if (!entries.length) { list.innerHTML = ''; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  list.innerHTML = entries.map((e, i) => `
+    <div class="log-item">
+      <div>
+        <div class="log-weight">${e.weight} lb</div>
+        <div class="log-date">${e.date}</div>
+      </div>
+      <div class="log-actions">
+        <button class="btn btn-secondary btn-sm" onclick="edit(${i})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="del(${i})">Delete</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function edit(i) {
+  const w = prompt('New weight (lb):', entries[i].weight);
+  if (w !== null && w !== '') {
+    entries[i].weight = Number(w);
+    localStorage.setItem('entries', JSON.stringify(entries));
+    render();
+  }
+}
+
+function del(i) {
+  if (!confirm('Delete this entry?')) return;
+  entries.splice(i, 1);
+  localStorage.setItem('entries', JSON.stringify(entries));
+  render();
+}
+
+render();
+</script>
+</body>
+</html>

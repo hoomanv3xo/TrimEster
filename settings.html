@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>trimESTER – Settings</title>
+  <link rel="stylesheet" href="5541.css">
+</head>
+<body>
+
+<div id="leftcolumn">
+  <div class="brand"><span>trim</span>ESTER</div>
+  <nav>
+    <a href="home.html">⌂ Home</a>
+    <a href="inbox.html">✉ Inbox</a>
+    <a href="logs.html">☰ Logs</a>
+    <a href="progress.html">◈ Progress</a>
+    <a href="community.html">♺ Community</a>
+    <a href="settings.html" class="active">⚙ Settings</a>
+    <a href="logout.html" class="logout">⏻ Logout</a>
+  </nav>
+</div>
+
+<div id="content">
+  <div class="page-title">
+    <h2>Settings</h2>
+    <h4>Manage your account preferences</h4>
+  </div>
+
+  <div class="card section">
+    <h3>Your Name</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">This is how you'll be greeted across the app.</p>
+    <div class="inline-form">
+      <input type="text" id="nameInput" placeholder="Your name" style="width:220px;">
+      <button class="btn btn-primary" onclick="saveName()">Save Name</button>
+    </div>
+    <p id="name-msg" style="color:var(--green-mid);font-size:13px;margin-top:12px;display:none;">✓ Name saved.</p>
+  </div>
+
+  <div class="card section">
+    <h3>Set Goals</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Define your starting and target weight to track your journey.</p>
+    <div class="inline-form">
+      <input type="number" id="start" placeholder="Starting weight (lb)" style="width:190px;">
+      <input type="number" id="goal"  placeholder="Goal weight (lb)"    style="width:190px;">
+      <button class="btn btn-primary" onclick="save()">Save Goals</button>
+    </div>
+    <p id="saved-msg" style="color:var(--green-mid);font-size:13px;margin-top:12px;display:none;">✓ Goals saved successfully.</p>
+  </div>
+
+  <div class="card">
+    <h3 style="color:var(--danger);">Danger Zone</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">This will permanently delete all your logs, goals, messages, and friends.</p>
+    <button class="btn btn-danger" onclick="reset()">Clear All Data</button>
+  </div>
+</div>
+
+<script>
+// Pre-fill current values
+window.addEventListener('DOMContentLoaded', () => {
+  const s = localStorage.getItem('startW');
+  const g = localStorage.getItem('goalW');
+  const n = localStorage.getItem('userName');
+  if (s) document.getElementById('start').placeholder = 'Current: ' + s + ' lb';
+  if (g) document.getElementById('goal').placeholder  = 'Current: ' + g + ' lb';
+  if (n) document.getElementById('nameInput').placeholder = 'Current: ' + n;
+});
+
+function saveName() {
+  const n = document.getElementById('nameInput').value.trim();
+  if (!n) return;
+  localStorage.setItem('userName', n);
+  document.getElementById('nameInput').value = '';
+  document.getElementById('nameInput').placeholder = 'Current: ' + n;
+  const msg = document.getElementById('name-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 3000);
+}
+
+function save() {
+  const s = document.getElementById('start').value;
+  const g = document.getElementById('goal').value;
+  if (s) localStorage.setItem('startW', s);
+  if (g) localStorage.setItem('goalW',  g);
+  document.getElementById('start').value = '';
+  document.getElementById('goal').value  = '';
+  const msg = document.getElementById('saved-msg');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display = 'none', 3000);
+}
+
+function reset() {
+  if (confirm('Are you sure? This cannot be undone.')) {
+    localStorage.clear();
+    alert('All data cleared.');
+  }
+}
+</script>
+</body>
+</html>
